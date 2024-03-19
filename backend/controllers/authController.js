@@ -31,6 +31,7 @@ const authController = {
     return jwt.sign(
       {
         id: user.id,
+        username: user.username,
         isAdmin: user.isAdmin,
       },
       process.env.JWT_ACCESS_KEY,
@@ -42,6 +43,7 @@ const authController = {
     return jwt.sign(
       {
         id: user.id,
+        username: user.username,
         isAdmin: user.isAdmin,
       },
       process.env.JWT_REFRESH_KEY,
@@ -121,6 +123,14 @@ const authController = {
     res.clearCookie("refreshToken");
     res.status(200).json("Logged out successfully!");
   },
+
+
+  //CHECK TOKEN FOR FRONTEND
+  checkAuth: async (req, res) => {
+    return res.json("still verified !");
+  },
 };
+
+
 
 module.exports = authController;
