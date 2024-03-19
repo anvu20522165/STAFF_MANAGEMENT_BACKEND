@@ -21,5 +21,5 @@ app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
 
 app.listen(5000, () => {
-  console.log("Server is running");
+  console.log("Server is running!");
 });

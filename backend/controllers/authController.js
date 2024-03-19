@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-let refreshTokens = [];
+let refreshTokens = []; //use Redis instead
 
 const authController = {
   //REGISTER
@@ -19,6 +19,7 @@ const authController = {
       });
 
       //Save user to DB
+      console.log(newUser)
       const user = await newUser.save();
       res.status(200).json(user);
     } catch (err) {
@@ -53,14 +54,14 @@ const authController = {
     try {
       const user = await User.findOne({ username: req.body.username });
       if (!user) {
-        res.status(404).json("Incorrect username");
+        return res.status(404).json("Incorrect username");
       }
       const validPassword = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!validPassword) {
-        res.status(404).json("Incorrect password");
+        return res.status(404).json("Incorrect password");
       }
       if (user && validPassword) {
         //Generate access token
@@ -76,10 +77,10 @@ const authController = {
           sameSite: "strict",
         });
         const { password, ...others } = user._doc;
-        res.status(200).json({ ...others, accessToken, refreshToken });
+        return res.status(200).json({ ...others, accessToken, refreshToken });
       }
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
