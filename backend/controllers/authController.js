@@ -74,7 +74,7 @@ const authController = {
         //STORE REFRESH TOKEN IN COOKIE
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
-          secure:false,
+          secure: false,
           path: "/",
           sameSite: "strict",
         });
@@ -96,7 +96,7 @@ const authController = {
     if (!refreshTokens.includes(refreshToken)) {
       return res.status(403).json("Refresh token is not valid");
     }
-    
+
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
       if (err) {
         console.log(err);
@@ -109,7 +109,7 @@ const authController = {
       console.log(refreshTokens)
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure:false,
+        secure: false,
         path: "/",
         sameSite: "strict",
       });
@@ -133,18 +133,53 @@ const authController = {
   checkAuth: async (req, res) => {
     const accessToken = req.body.accessToken;
     //console.log(accessToken)
-  const success = true;
-  const fail = false;
-  if (accessToken) {
-    jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
-      if (err) {
-        return res.status(403).json({fail});
+    const success = true;
+    const fail = false;
+    if (accessToken) {
+      jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
+        if (err) {
+          return res.status(403).json({ fail });
+        }
+        return res.status(200).json({ success });
+      });
+    } else {
+      return res.status(401).json({ fail });
+    }
+  },
+
+  //UPDATE PASSWORD
+  updatePassword: async (req, res) => {
+    try {
+      console.log("changing pass")
+      const user = await User.findById(req.params.id);
+      const updatedPassword = req.body;
+      if (!user) {
+        return res.status(404).json("Can't find user!");
       }
-      return res.status(200).json({success});
-    });
-  } else {
-    return res.status(401).json({fail});
-  }
+      //Update
+      if (updatedPassword.oldPassword) {
+        const validPassword = await bcrypt.compare(
+          updatedPassword.oldPassword,
+          user.password
+        );
+        if (!validPassword) {
+          return res.status(404).json("Incorrect password");
+        }
+        console.log("old pass is valid")
+        if (updatedPassword.newPassword) {
+          console.log(updatedPassword.newPassword)
+
+          const salt = await bcrypt.genSalt(10);
+          const hashed = await bcrypt.hash(updatedPassword.newPassword, salt);
+          user.password = hashed;
+          await user.save();
+          return res.status(200).json(user);
+        }
+
+      }
+    } catch (err) {
+      return res.status(500).json(err);
+    }
   },
 };
 

@@ -15,6 +15,8 @@ router.get("/:id", userController.getById);
 //UPDATE BY ID
 router.put("/:id", verifyTokenAndAdmin, userController.updateById);
 
+//CHANGE USER'S PASSWORD
+router.put("/password/:id", verifyTokenAndUserAuthorization, userController.updatePassword);
 
 //DELETE USER
 router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
