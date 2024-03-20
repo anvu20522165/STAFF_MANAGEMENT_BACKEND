@@ -7,7 +7,7 @@ const { verifyToken } = require("../controllers/verifyToken");
 router.post("/register", authController.registerUser);
 
 //check token for frontend
-router.post("/verifyAuth", verifyToken, authController.checkAuth);
+router.post("/checkAuth", authController.checkAuth);
 
 //REFRESH TOKEN
 router.post("/refresh", authController.requestRefreshToken);

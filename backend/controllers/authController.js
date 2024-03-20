@@ -35,7 +35,7 @@ const authController = {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30s" }
+      { expiresIn: "1d" }
     );
   },
 
@@ -86,14 +86,17 @@ const authController = {
     }
   },
 
+  //custom 
   requestRefreshToken: async (req, res) => {
     //Take refresh token from user
-    const refreshToken = req.cookies.refreshToken;
+    //const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken;
     //Send error if token is not valid
     if (!refreshToken) return res.status(401).json("You're not authenticated");
     if (!refreshTokens.includes(refreshToken)) {
       return res.status(403).json("Refresh token is not valid");
     }
+    
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
       if (err) {
         console.log(err);
@@ -103,6 +106,7 @@ const authController = {
       const newAccessToken = authController.generateAccessToken(user);
       const newRefreshToken = authController.generateRefreshToken(user);
       refreshTokens.push(newRefreshToken);
+      console.log(refreshTokens)
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure:false,
@@ -125,9 +129,22 @@ const authController = {
   },
 
 
-  //CHECK TOKEN FOR FRONTEND
+  //CHECK if TOKEN is still valid FOR FRONTEND
   checkAuth: async (req, res) => {
-    return res.json("still verified !");
+    const accessToken = req.body.accessToken;
+    //console.log(accessToken)
+  const success = true;
+  const fail = false;
+  if (accessToken) {
+    jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
+      if (err) {
+        return res.status(403).json({fail});
+      }
+      return res.status(200).json({success});
+    });
+  } else {
+    return res.status(401).json({fail});
+  }
   },
 };
 

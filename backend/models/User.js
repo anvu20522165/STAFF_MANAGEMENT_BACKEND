@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema(
       max: 20,
       unique: true,
     },
+    avt: {
+      type: String,
+      default: "https://imgkub.com/images/2022/04/07/user-1.png",
+    },
     email: {
       type: String,
       require: true,
