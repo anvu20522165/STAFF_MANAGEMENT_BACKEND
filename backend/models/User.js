@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "https://imgkub.com/images/2022/04/07/user-1.png",
     },
+    verificationToken: String,
     email: {
       type: String,
       require: true,
