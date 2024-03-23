@@ -29,6 +29,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    position: {
+      type: String,
+      default: "NHAN_VIEN"
+    },
+    department: {
+      type: String,     
+    },
   },
   { timestamps: true }
 );
