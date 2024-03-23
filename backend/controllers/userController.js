@@ -1,11 +1,29 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+var url = require('url');
+
+
+
 
 const userController = {
+
   //GET ALL USER
   getAllUsers: async (req, res) => {
     try {
-      const user = await User.find();
+      const username = req.query.username || '';
+      const email = req.query.email || '';
+      const position = req.query.position || '';
+      const user = await User.find(
+        {
+          "$and": 
+          [
+          {"username": { $regex: '.*' + username + '.*' }},
+          {"email": { $regex: '.*' + email + '.*' }},
+          {"position": { $regex: position }},
+        ]
+        });
+        console.log(user)
+
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);
@@ -17,47 +35,47 @@ const userController = {
     try {
       console.log(req.params.id)
       const user = await User.findById(req.params.id);
-      if(!user) {
+      if (!user) {
         return res.status(404).json("Can't find user!");
       }
       return res.status(200).json(user);
     } catch (err) {
-      return  res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
 
   //UPDATE BY ID
-  updateById:async (req, res) => {
+  updateById: async (req, res) => {
     try {
       //console.log(req.params.id)
       const user = await User.findById(req.params.id);
       //console.log(user)
       const updatedUser = req.body;
 
-      if(!user) {
+      if (!user) {
         return res.status(404).json("Can't find user!");
       }
       //Update
-      if(updatedUser.username){
+      if (updatedUser.username) {
         user.username = updatedUser.username
       }
-      if(updatedUser.email){
+      if (updatedUser.email) {
         user.email = updatedUser.email
       }
-      if(updatedUser.password){
+      if (updatedUser.password) {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(updatedUser.password, salt);
         user.password = hashed
       }
-      if(updatedUser.avt){
+      if (updatedUser.avt) {
         user.avt = updatedUser.avt
       }
       console.log(user)
       await user.save();
       return res.status(200).json(user);
     } catch (err) {
-      return  res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -68,41 +86,41 @@ const userController = {
       await User.findByIdAndDelete(req.params.id);
       return res.status(200).json("User deleted");
     } catch (err) {
-      return  res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
   //UPDATE PASSWORD
-  updatePassword:async (req, res) => {
+  updatePassword: async (req, res) => {
     try {
       //console.log(req.params.id)
       const user = await User.findById(req.params.id);
       //console.log(user)
       const updatedUser = req.body;
 
-      if(!user) {
+      if (!user) {
         return res.status(404).json("Can't find user!");
       }
       //Update
-      if(updatedUser.username){
+      if (updatedUser.username) {
         user.username = updatedUser.username
       }
-      if(updatedUser.email){
+      if (updatedUser.email) {
         user.email = updatedUser.email
       }
-      if(updatedUser.password){
+      if (updatedUser.password) {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(updatedUser.password, salt);
         user.password = hashed
       }
-      if(updatedUser.avt){
+      if (updatedUser.avt) {
         user.avt = updatedUser.avt
       }
       console.log(user)
       await user.save();
       return res.status(200).json(user);
     } catch (err) {
-      return  res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 };
