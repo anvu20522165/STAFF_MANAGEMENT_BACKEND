@@ -13,6 +13,8 @@ const userController = {
       const username = req.query.username || '';
       const email = req.query.email || '';
       const position = req.query.position || '';
+      const department = req.query.department || '';
+
       const user = await User.find(
         {
           "$and": 
@@ -20,6 +22,7 @@ const userController = {
           {"username": { $regex: '.*' + username + '.*' }},
           {"email": { $regex: '.*' + email + '.*' }},
           {"position": { $regex: position }},
+          {"department": { $regex: department }},
         ]
         });
         console.log(user)
@@ -33,7 +36,6 @@ const userController = {
   //GET BY ID
   getById: async (req, res) => {
     try {
-      console.log(req.params.id)
       const user = await User.findById(req.params.id);
       if (!user) {
         return res.status(404).json("Can't find user!");
@@ -63,13 +65,27 @@ const userController = {
       if (updatedUser.email) {
         user.email = updatedUser.email
       }
-      if (updatedUser.password) {
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(updatedUser.password, salt);
-        user.password = hashed
-      }
+
       if (updatedUser.avt) {
         user.avt = updatedUser.avt
+      }
+      if (updatedUser.fullname) {
+        user.fullname = updatedUser.fullname
+      }
+      if (updatedUser.birth) {
+        user.birth = updatedUser.birth
+      }
+      if (updatedUser.phone) {
+        user.phone = updatedUser.phone
+      }
+      if (updatedUser.gender) {
+        user.gender = updatedUser.gender
+      }
+      if (updatedUser.position) {
+        user.position = updatedUser.position
+      }
+      if (updatedUser.department) {
+        user.department = updatedUser.department
       }
       console.log(user)
       await user.save();
