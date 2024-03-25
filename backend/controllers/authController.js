@@ -40,7 +40,7 @@ const authController = {
       const hashed = await bcrypt.hash(req.body.password, salt);
       const checkName = await User.findOne({ username: req.body.username });
       const checkEmail = await User.findOne({ username: req.body.email });
-
+      console.log(req.body)
       if (checkName || checkEmail) {
         return res.status(404).json("This user has already existed");
       }
@@ -49,8 +49,13 @@ const authController = {
         username: req.body.username,
         email: req.body.email,
         password: hashed,
+        department: req.body.department,
+        birth: req.body.birth,
+        position: req.body.position,
+        gender: req.body.gender,
+        phone: req.body.phone,
+        fullname: req.body.fullname,
       });
-
       //Save user to DB
       const user = await newUser.save();
       res.status(200).json(user);
