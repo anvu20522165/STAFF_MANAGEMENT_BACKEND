@@ -40,8 +40,22 @@ const verifyTokenAndAdmin = (req, res, next) => {
   });
 };
 
+const verifyDepartmentHead = (req, res, next) => {
+  verifyToken(req, res, () => {
+    console.log(req.user.position)
+    if (req.user.position === "TRUONG_PHONG") {
+      next();
+    } else {
+      // return res.status(403).json("Bạn không có quyền truy cập :vv");
+      next()
+    }
+  });
+};
+
+
 module.exports = {
   verifyToken,
   verifyTokenAndUserAuthorization,
   verifyTokenAndAdmin,
+  verifyDepartmentHead
 };
