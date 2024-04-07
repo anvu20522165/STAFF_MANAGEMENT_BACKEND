@@ -6,13 +6,13 @@ const announcementController = {
   // Tạo Announcement
   createAnnouncement: async (req, res) => {
     try {
-      const newAnnouncement = new Announcement({
+      const newAnnouncement = await new Announcement({
         ...req.body,
       });
 
-    //   if (newAnnouncement.department !== req.user.department) {
-    //     return res.status(403).json("Bạn không có quyền tạo Announcement cho phòng ban này");
-    //   }
+      if (newAnnouncement.department !== req.user.department) {
+        return res.status(403).json("Bạn không có quyền tạo Announcement cho phòng ban này");
+      }
 
       const savedAnnouncement = await newAnnouncement.save();
       res.status(201).json(savedAnnouncement);

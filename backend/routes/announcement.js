@@ -4,7 +4,7 @@ const announcementController = require('../controllers/announcementController');
 const { verifyToken, verifyDepartmentHead } = require('../controllers/verifyToken');
 
 // Tạo Announcement
-router.post('/', verifyToken, announcementController.createAnnouncement);
+router.post('/', verifyDepartmentHead, announcementController.createAnnouncement);
 
 // Lấy Announcement bởi ID
 router.get('/:id', verifyToken, announcementController.getAnnouncementById);

@@ -1,4 +1,3 @@
-//backend for staff management
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -9,23 +8,40 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const departmentRoute = require("./routes/department");
 const announcementRoute = require("./routes/announcement");
+const passport = require('passport');
+const passportJWT = require('passport-jwt');
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
 dotenv.config();
 
-mongoose.connect(process.env.MONGODB_URL, () => {
-  console.log("CONNECTED TO MONGO DB");
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("Connected to MongoDB"))
+.catch(err => console.error("Could not connect to MongoDB:", err));
 
+// Configure Passport and JWT
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_ACCESS_KEY // Use the correct secret key
+}, (jwtPayload, done) => {
+  return done(null, jwtPayload);
+}));
+
+app.use(passport.initialize());
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
-//ROUTES
+// ROUTES
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
 app.use("/v1/department", departmentRoute);
 app.use("/v1/announcement", announcementRoute);
 
 app.listen(5555, () => {
-  console.log("Server is running port 5555!");
+  console.log("Server is running on port 5555!");
 });

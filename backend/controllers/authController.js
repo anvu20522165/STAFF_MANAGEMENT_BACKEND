@@ -12,7 +12,6 @@ const authController = {
       const hashed = await bcrypt.hash(req.body.password, salt);
       const checkName = await User.findOne({ username: req.body.username });
       const checkEmail = await User.findOne({ username: req.body.email });
-      console.log(req.body)
       if (checkName || checkEmail) {
         return res.status(404).json("This user has already existed");
       }
@@ -42,6 +41,8 @@ const authController = {
         id: user.id,
         username: user.username,
         isAdmin: user.isAdmin,
+        position:user.position,
+        department: user.department
       },
       process.env.JWT_ACCESS_KEY,
       { expiresIn: "1d" }
