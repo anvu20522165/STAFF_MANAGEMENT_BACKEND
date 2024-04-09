@@ -39,7 +39,7 @@ app.use(express.json());
 // ROUTES
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
-app.use("/v1/department", departmentRoute);
+// app.use("/v1/department", departmentRoute);
 app.use("/v1/announcement", announcementRoute);
 
 app.listen(5555, () => {

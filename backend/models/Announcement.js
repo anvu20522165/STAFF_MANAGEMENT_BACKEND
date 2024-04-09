@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const announcementSchema = new mongoose.Schema(
   {
-    nameAnnoucement: {
+    nameAnnouncement: {
       type: String,
       required: true,
     },

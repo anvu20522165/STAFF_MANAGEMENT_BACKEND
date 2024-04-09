@@ -6,6 +6,9 @@ const { verifyToken, verifyDepartmentHead } = require('../controllers/verifyToke
 // Tạo Announcement
 router.post('/', verifyDepartmentHead, announcementController.createAnnouncement);
 
+// Lấy ra tất cả Announcement
+router.get('/get-all-announcements',verifyToken, announcementController.getAllAnnouncements);
+
 // Lấy Announcement bởi ID
 router.get('/:id', verifyToken, announcementController.getAnnouncementById);
 

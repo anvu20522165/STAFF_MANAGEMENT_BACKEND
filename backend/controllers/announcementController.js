@@ -15,7 +15,17 @@ const announcementController = {
       }
 
       const savedAnnouncement = await newAnnouncement.save();
-      res.status(201).json(savedAnnouncement);
+      res.status(200).json(savedAnnouncement);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  // Lấy ra tất cả Announcement
+  getAllAnnouncements: async (req, res) => {
+    try {
+      const announcements = await Announcement.find({});
+      res.status(200).json(announcements);
     } catch (err) {
       res.status(500).json(err);
     }
