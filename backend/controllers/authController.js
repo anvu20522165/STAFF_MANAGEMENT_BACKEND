@@ -2,35 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-let refreshTokens = []; //use Redis instead
-
-// const sendVerificationEmail = async (email, verificationToken) => {
-//   // Create a Nodemailer transporter
-//   const transporter = nodemailer.createTransport({
-//     // Configure the email service or SMTP details here
-//     service: "gmail",
-//     auth: {
-//       user: "nguyenphuocanvu@gmail.com",
-//       pass: "bngjbwzkvfpnptrd",
-//     },
-//   });
-
-//   // Compose the email message
-//   const mailOptions = {
-//     from: "STAFF.com",
-//     to: email,
-//     subject: "Email Verification",
-//     text: `Please click the following link to verify your email: http://localhost:5000/activate/${verificationToken}`,
-//   };
-
-//   // Send the email
-//   try {
-//     await transporter.sendMail(mailOptions);
-//     console.log("Verification email sent successfully");
-//   } catch (error) {
-//     console.error("Error sending verification email:", error);
-//   }
-// };
+let refreshTokens = [];
 
 const authController = {
   //REGISTER
@@ -40,7 +12,6 @@ const authController = {
       const hashed = await bcrypt.hash(req.body.password, salt);
       const checkName = await User.findOne({ username: req.body.username });
       const checkEmail = await User.findOne({ username: req.body.email });
-      console.log(req.body)
       if (checkName || checkEmail) {
         return res.status(404).json("This user has already existed");
       }
@@ -70,6 +41,8 @@ const authController = {
         id: user.id,
         username: user.username,
         isAdmin: user.isAdmin,
+        position:user.position,
+        department: user.department
       },
       process.env.JWT_ACCESS_KEY,
       { expiresIn: "1d" }

@@ -25,7 +25,6 @@ const userController = {
           {"department": { $regex: department }},
         ]
         });
-        console.log(user)
 
       res.status(200).json(user);
     } catch (err) {
@@ -87,7 +86,6 @@ const userController = {
       if (updatedUser.department) {
         user.department = updatedUser.department
       }
-      console.log(user)
       await user.save();
       return res.status(200).json(user);
     } catch (err) {
