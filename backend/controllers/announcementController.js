@@ -15,9 +15,9 @@ const announcementController = {
       }
 
       const savedAnnouncement = await newAnnouncement.save();
-      res.status(200).json(savedAnnouncement);
+      return res.status(200).json(savedAnnouncement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -25,9 +25,9 @@ const announcementController = {
   getAllAnnouncements: async (req, res) => {
     try {
       const announcements = await Announcement.find({});
-      res.status(200).json(announcements);
+      return res.status(200).json(announcements);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -45,7 +45,7 @@ const announcementController = {
 
       res.status(200).json(announcement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -71,7 +71,7 @@ const announcementController = {
 
       res.status(200).json(updatedAnnouncement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -90,7 +90,7 @@ const announcementController = {
       await Announcement.findByIdAndDelete(req.params.id);
       res.status(200).json("Announcement đã được xóa");
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 };
