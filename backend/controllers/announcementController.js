@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Announcement = require("../models/Announcement");
 const User = require("../models/User");
 const { verifyDepartmentHead } = require('./verifyToken');
@@ -6,11 +7,19 @@ const announcementController = {
   // Tạo Announcement
   createAnnouncement: async (req, res) => {
     try {
+      // Giải mã token để lấy department
+      const token = req.headers.authorization.split(' ')[1]; // Lấy token từ header
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+      const department = decoded.department;
+
+      // Tạo mới announcement từ req.body và department từ decoded token
       const newAnnouncement = await new Announcement({
         ...req.body,
+        department,
       });
 
-      if (newAnnouncement.department !== req.user.department) {
+      // Kiểm tra quyền của user
+      if (newAnnouncement.department !== department) {
         return res.status(403).json("Bạn không có quyền tạo Announcement cho phòng ban này");
       }
 
