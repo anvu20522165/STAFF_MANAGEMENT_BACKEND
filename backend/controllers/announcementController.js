@@ -116,7 +116,7 @@ const announcementController = {
       }
 
       await Announcement.findByIdAndDelete(req.params.id);
-      res.status(200).json("Announcement đã được xóa");
+      return res.status(200).json("Announcement đã được xóa");
     } catch (err) {
       return res.status(500).json(err);
     }
