@@ -7,7 +7,7 @@ const announcementSchema = new mongoose.Schema(
       required: true,
     },
     startAt: {
-      type: Date,
+      type: String,
       required: true,
     },
     note: {

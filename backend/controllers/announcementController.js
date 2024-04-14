@@ -24,12 +24,13 @@ const announcementController = {
   // Lấy ra tất cả Announcement
   getAllAnnouncements: async (req, res) => {
     try {
-      const announcements = await Announcement.find({});
+      const userDepartment = req.user.department; // Lấy department từ user tạo request
+      const announcements = await Announcement.find({ department: userDepartment });
       return res.status(200).json(announcements);
     } catch (err) {
       return res.status(500).json(err);
     }
-  },
+},
 
   // Lấy Announcement bởi ID
   getAnnouncementById: async (req, res) => {

@@ -55,6 +55,8 @@ const authController = {
         id: user.id,
         username: user.username,
         isAdmin: user.isAdmin,
+        position:user.position,
+        department: user.department
       },
       process.env.JWT_REFRESH_KEY,
       { expiresIn: "365d" }
