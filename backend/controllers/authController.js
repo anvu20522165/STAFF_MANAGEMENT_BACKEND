@@ -40,6 +40,7 @@ const authController = {
       {
         id: user.id,
         username: user.username,
+        fullname:user.fullname,
         isAdmin: user.isAdmin,
         position:user.position,
         department: user.department
@@ -54,6 +55,7 @@ const authController = {
       {
         id: user.id,
         username: user.username,
+        fullname:user.fullname,
         isAdmin: user.isAdmin,
         position:user.position,
         department: user.department
