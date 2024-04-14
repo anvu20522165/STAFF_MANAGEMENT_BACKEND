@@ -45,6 +45,21 @@ const userController = {
     }
   },
 
+  getUserByDepartment: async (req, res) => {
+    try {
+      const userDepartment = req.user.department; // Lấy department từ accessToken
+      const users = await User.find({ department: userDepartment });
+
+      if (!users || users.length === 0) {
+        return res.status(404).json("No users found for the specified department.");
+      }
+
+      res.status(200).json(users);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
 
   //UPDATE BY ID
   updateById: async (req, res) => {
