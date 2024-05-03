@@ -8,6 +8,8 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const announcementRoute = require("./routes/announcement");
 const documentRoute = require("./routes/document");
+const requestRoute = require("./routes/request");
+const multiTask = require("./routes/multiTask");
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
@@ -41,7 +43,8 @@ app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
 app.use("/v1/announcement", announcementRoute);
 app.use("/v1/document",documentRoute);
-
+app.use("/v1/request", requestRoute);
+app.use("/v1/multiTask", multiTask);
 app.listen(5555, () => {
   console.log("Server is running on port 5555!");
 });

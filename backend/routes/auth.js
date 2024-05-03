@@ -4,7 +4,7 @@ const router = require("express").Router();
 const { verifyToken, verifyTokenAndUserAuthorization, verifyTokenAndAdmin} = require("../controllers/verifyToken");
 
 //REGISTER
-router.post("/register", verifyTokenAndAdmin, authController.registerUser);
+router.post("/register", authController.registerUser);
 
 //check token for frontend
 router.post("/checkAuth", authController.checkAuth);
