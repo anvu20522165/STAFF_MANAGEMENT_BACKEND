@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Announcement = require("../models/Announcement");
 const User = require("../models/User");
 const { verifyDepartmentHead } = require('./verifyToken');
@@ -6,30 +7,57 @@ const announcementController = {
   // Tạo Announcement
   createAnnouncement: async (req, res) => {
     try {
+      // Giải mã token để lấy department
+      const token = req.headers.authorization.split(' ')[1]; // Lấy token từ header
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+      const department = decoded.department;
+
+      // Tạo mới announcement từ req.body và department từ decoded token
       const newAnnouncement = await new Announcement({
         ...req.body,
+        department,
       });
 
-      if (newAnnouncement.department !== req.user.department) {
+      // Kiểm tra quyền của user
+      if (newAnnouncement.department !== department) {
         return res.status(403).json("Bạn không có quyền tạo Announcement cho phòng ban này");
       }
 
       const savedAnnouncement = await newAnnouncement.save();
-      res.status(200).json(savedAnnouncement);
+      return res.status(200).json(savedAnnouncement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
   // Lấy ra tất cả Announcement
-  getAllAnnouncements: async (req, res) => {
+ getAllAnnouncements: async (req, res) => {
     try {
-      const announcements = await Announcement.find({});
-      res.status(200).json(announcements);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
+      const token = req.headers.authorization.split(' ')[1]; // Lấy token từ header
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+      const userDepartment = decoded.department; // Lấy department từ user tạo request
+      const userPosition = decoded.position;
+      const userFullname = decoded.fullname; 
+      let announcements = [];
+
+      if (userPosition !== 'TRUONG_PHONG') {
+        const allAnnouncements = await Announcement.find({ department: userDepartment });
+        // Kiểm tra xem userFullname có thuộc vào listEmployee của bất kỳ announcement nào không
+        allAnnouncements.forEach(announcement => {
+          const employeeList = announcement.listEmployee[0].split(',').map(name => name.trim());
+          if (employeeList.includes(userFullname)) {
+            announcements.push(announcement);
+          }
+        });
+      } else {
+        announcements = await Announcement.find({ department: userDepartment });
+      }
+      console.log('Announcements:', announcements);
+      return res.status(200).json(announcements);
+  } catch (err) {
+      return res.status(500).json(err);
+  }
+}, 
 
   // Lấy Announcement bởi ID
   getAnnouncementById: async (req, res) => {
@@ -45,7 +73,7 @@ const announcementController = {
 
       res.status(200).json(announcement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -71,7 +99,7 @@ const announcementController = {
 
       res.status(200).json(updatedAnnouncement);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -88,9 +116,9 @@ const announcementController = {
       }
 
       await Announcement.findByIdAndDelete(req.params.id);
-      res.status(200).json("Announcement đã được xóa");
+      return res.status(200).json("Announcement đã được xóa");
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 };

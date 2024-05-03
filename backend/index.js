@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
-const departmentRoute = require("./routes/department");
 const announcementRoute = require("./routes/announcement");
+const documentRoute = require("./routes/document");
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
@@ -39,8 +39,8 @@ app.use(express.json());
 // ROUTES
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
-// app.use("/v1/department", departmentRoute);
 app.use("/v1/announcement", announcementRoute);
+app.use("/v1/document",documentRoute);
 
 app.listen(5555, () => {
   console.log("Server is running on port 5555!");

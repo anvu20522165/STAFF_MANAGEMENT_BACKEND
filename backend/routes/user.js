@@ -12,6 +12,9 @@ router.get("/users", verifyToken, userController.getAllUsers);
 //GET DETAIL BY ID
 router.get("/:id", userController.getById);
 
+//GET USER BY DEPARTMENT
+router.get('/users/department',verifyToken, userController.getUserByDepartment);
+
 //UPDATE BY ID
 router.put("/:id", verifyTokenAndAdmin, userController.updateById);
 
