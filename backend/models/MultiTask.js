@@ -9,10 +9,12 @@ const multiTaskSchema = new mongoose.Schema(
     },
     tasks: [
       {
-        department: {
-          type: String,
+        department: 
+          {
+          value: String,         
+          label: String,       
         },
-        title: {
+        name: {
           type: String,
         },
         status: {
@@ -21,6 +23,12 @@ const multiTaskSchema = new mongoose.Schema(
         },     
       }
     ],
+    startDate: {
+      type: Date,
+    },
+    dueDate: {
+      type: Date,
+    },
     status: {
       type: String,
     }

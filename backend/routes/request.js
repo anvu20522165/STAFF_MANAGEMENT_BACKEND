@@ -8,6 +8,8 @@ const {
 const router = require("express").Router();
 //GET ALL USERS
 router.get("/", verifyToken, requestController.getAllRequests);
-router.post("/", requestController.addNewRequest)
+router.get("/:id", verifyToken, requestController.getById);
+router.post("/", verifyToken, requestController.addNewRequest)
+router.put("/decline/:id", verifyToken, requestController.declineRequest)
 
 module.exports = router;
