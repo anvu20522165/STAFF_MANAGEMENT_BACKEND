@@ -13,6 +13,9 @@ const announcementSchema = new mongoose.Schema(
     note: {
       type: String,
     },
+    meeting: {
+      type: String,
+    },
     listEmployee: [
       {
         type: String,
