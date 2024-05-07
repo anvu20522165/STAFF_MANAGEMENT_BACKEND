@@ -52,7 +52,6 @@ const announcementController = {
       } else {
         announcements = await Announcement.find({ department: userDepartment });
       }
-      console.log('Announcements:', announcements);
       return res.status(200).json(announcements);
   } catch (err) {
       return res.status(500).json(err);
