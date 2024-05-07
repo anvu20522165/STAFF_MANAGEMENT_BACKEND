@@ -32,29 +32,44 @@ const announcementController = {
 
   // Lấy ra tất cả Announcement
  getAllAnnouncements: async (req, res) => {
-    try {
-      const token = req.headers.authorization.split(' ')[1]; // Lấy token từ header
-      const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
-      const userDepartment = decoded.department; // Lấy department từ user tạo request
-      const userPosition = decoded.position;
-      const userFullname = decoded.fullname; 
-      let announcements = [];
-
-      if (userPosition !== 'TRUONG_PHONG') {
-        const allAnnouncements = await Announcement.find({ department: userDepartment });
-        // Kiểm tra xem userFullname có thuộc vào listEmployee của bất kỳ announcement nào không
-        allAnnouncements.forEach(announcement => {
-          const employeeList = announcement.listEmployee[0].split(',').map(name => name.trim());
-          if (employeeList.includes(userFullname)) {
-            announcements.push(announcement);
-          }
-        });
-      } else {
-        announcements = await Announcement.find({ department: userDepartment });
-      }
-      return res.status(200).json(announcements);
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+    const userDepartment = decoded.department;
+    const userPosition = decoded.position;
+    const userFullname = decoded.fullname; 
+    let announcements = [];
+  
+    // Extract query parameters
+    const { nameAnnouncement, meeting } = req.query;
+  
+    if (userPosition !== 'TRUONG_PHONG') {
+      const allAnnouncements = await Announcement.find({ 
+        department: userDepartment,
+        nameAnnouncement: { $regex: '.*' + nameAnnouncement + '.*' },
+        meeting: { $regex: '.*' + meeting + '.*' }
+      });
+  
+      allAnnouncements.forEach(announcement => {
+        const employeeList = announcement.listEmployee[0].split(',').map(name => name.trim());
+        if (employeeList.includes(userFullname)) {
+          announcements.push(announcement);
+        }
+      });
+    } else {
+      announcements = await Announcement.find({
+        department: userDepartment,
+        "$and": 
+        [
+        {nameAnnouncement: { $regex: '.*' + nameAnnouncement + '.*' }},
+        {meeting: { $regex: '.*' + meeting + '.*' }}
+        ]
+      });
+    }
+  
+    return res.status(200).json(announcements);
   } catch (err) {
-      return res.status(500).json(err);
+    // handle error
   }
 }, 
 
