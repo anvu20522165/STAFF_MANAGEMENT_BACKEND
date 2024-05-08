@@ -34,7 +34,16 @@ exports.deleteDocument = async (req, res) => {
 
 exports.getAllDocuments = async (req, res) => {
   try {
-    const documents = await Document.find();
+    const nameDocument = req.query.nameDocument || '';
+    const Source = req.query.Source || '';
+    const documents = await Document.find(
+      {
+        "$and": [
+          { "nameDocument": { $regex: '.*' + nameDocument + '.*' } },
+          { "Source": { $regex: '.*' + Source + '.*' } },
+        ]
+      }
+    );
     return res.status(200).json(documents);
   } catch (err) {
     return res.status(500).json({ message: 'Lỗi khi lấy tài liệu.' });
