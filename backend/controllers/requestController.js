@@ -8,11 +8,25 @@ const requestController = {
   //GET ALL REQUEST
   getAllRequests: async (req, res) => {
     try {
-      const requests = await Request.find();
-
-      res.status(200).json(requests);
+      let department = req.query.department || '';
+      let useriId  = req.query.userid || '';
+      if (department === "BAN_GIAM_DOC") {
+        department = "";
+        const requests = await Request.find({
+          "$and": 
+          [
+          {"department": { $regex: department }},
+        ]
+        });
+        return res.status(200).json(requests); 
+      }
+      else {
+        const requests = await Request.find();
+        const results = requests.filter((item) => item.userid.toString() === useriId);
+        return res.status(200).json(results); 
+      }
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -33,7 +47,6 @@ const requestController = {
   getById: async (req, res) => {
     try {
       const request = await Request.findById(req.params.id);
-      console.log(request)
       if (!request) {
         return res.status(404).json("Can't find request!");
       }

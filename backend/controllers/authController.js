@@ -21,6 +21,7 @@ const authController = {
         email: req.body.email,
         password: hashed,
         department: req.body.department,
+        cccd: req.body.cccd,
         birth: req.body.birth,
         position: req.body.position,
         gender: req.body.gender,
@@ -41,6 +42,7 @@ const authController = {
         id: user.id,
         username: user.username,
         fullname:user.fullname,
+        avt: user.avt,
         isAdmin: user.isAdmin,
         position:user.position,
         department: user.department
@@ -55,6 +57,7 @@ const authController = {
       {
         id: user.id,
         username: user.username,
+        avt: user.avt,
         fullname:user.fullname,
         isAdmin: user.isAdmin,
         position:user.position,

@@ -1,8 +1,8 @@
 const userController = require("../controllers/userController");
 const {
   verifyToken,
-  verifyTokenAndAdmin,
   verifyTokenAndUserAuthorization,
+  verifyDepartmentHead
 } = require("../controllers/verifyToken");
 
 const router = require("express").Router();
@@ -16,12 +16,15 @@ router.get("/:id", userController.getById);
 router.get('/users/department',verifyToken, userController.getUserByDepartment);
 
 //UPDATE BY ID
-router.put("/:id", verifyTokenAndAdmin, userController.updateById);
+router.put("/:id", userController.updateById);
 
 //CHANGE USER'S PASSWORD
 router.put("/password/:id", verifyTokenAndUserAuthorization, userController.updatePassword);
 
+//CHANGE USER'S PASSWORD DEFAULT
+router.put("/defaultPassword/:id", userController.restorePassword);
+
 //DELETE USER
-router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
+router.delete("/:id", verifyDepartmentHead, userController.deleteUser);
 
 module.exports = router;

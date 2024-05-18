@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema(
       max: 50,
       unique: true,
     },
+    cccd: {
+      type: String,
+      require: true,
+      max: 50,
+      unique: true,
+    },
     password: {
       type: String,
       require: true,

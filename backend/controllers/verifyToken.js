@@ -48,9 +48,20 @@ const verifyDepartmentHead = (req, res, next) => {
   });
 };
 
+const verifyDepartmentHeadOrCEO = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.position === "TRUONG_PHONG"||req.user.department === "BAN_GIAM_DOC") {
+      next();
+    } else {
+      return res.status(403).json({ message: "Bạn không có quyền truy cập!!" });
+    }
+  });
+};
+
 module.exports = {
   verifyToken,
   verifyTokenAndUserAuthorization,
   verifyTokenAndAdmin,
-  verifyDepartmentHead
+  verifyDepartmentHead,
+  verifyDepartmentHeadOrCEO
 };
