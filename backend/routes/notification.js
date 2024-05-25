@@ -17,7 +17,7 @@ router.post('/create', verifyToken, notificationController.createNotification)
 /**
  * get notifications from specific user
  */
-router.get('/:userId', verifyToken, notificationController.getNotificationByUserId)
+router.get('/user/:userId', verifyToken, notificationController.getNotificationByUserId)
 
 /**
  * update notification by id

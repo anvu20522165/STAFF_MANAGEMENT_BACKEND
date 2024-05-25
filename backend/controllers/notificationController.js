@@ -18,10 +18,23 @@ const notificationController = {
             const {type} = req.query
             const notifications = await Notification.find({
                 ...(type && {type})
-            })
+            }).sort({updatedAt: -1})
+            const response = [];
+            for (const notification of notifications) {
+                const employments = (await NotificationUser.find({
+                    notificationId: notification._id
+                })
+                    .populate('userId').exec())
+                    .map(o => o.userId)
+                    .map(user => ({_id: user._id, fullname: user.fullname}));
+                response.push({
+                    ...JSON.parse(JSON.stringify(notification)),
+                    employments
+                })
+            }
 
             // response
-            res.status(200).json(notifications)
+            res.status(200).json(response)
         } catch (err) {
             res.status(500).json(err)
         }
@@ -71,7 +84,7 @@ const notificationController = {
                 })))
             }
 
-            return res.status(200).json(decoded)
+            return res.status(200).json(savedNotification)
         } catch (err) {
             return res.status(400).json(err)
         }
@@ -87,6 +100,7 @@ const notificationController = {
             const {userId} = req.params
             const userNotifications = await NotificationUser.find({userId})
                 .populate('notificationId')
+                .sort({updatedAt: -1})
                 .exec();
 
             const notifications = (userNotifications || []).map(o => o.notificationId)
