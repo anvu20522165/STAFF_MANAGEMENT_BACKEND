@@ -15,7 +15,10 @@ const notificationController = {
      */
     getAllNotifications: async (req, res) => {
         try {
-            const notifications = await Notification.find()
+            const {type} = req.query
+            const notifications = await Notification.find({
+                ...(type && {type})
+            })
 
             // response
             res.status(200).json(notifications)
