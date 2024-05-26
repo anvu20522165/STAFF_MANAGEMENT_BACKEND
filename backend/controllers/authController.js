@@ -45,7 +45,8 @@ const authController = {
         avt: user.avt,
         isAdmin: user.isAdmin,
         position:user.position,
-        department: user.department
+        department: user.department,
+        birthday: user.birth
       },
       process.env.JWT_ACCESS_KEY,
       { expiresIn: "1d" }
@@ -61,7 +62,8 @@ const authController = {
         fullname:user.fullname,
         isAdmin: user.isAdmin,
         position:user.position,
-        department: user.department
+        department: user.department,
+        birthday: user.birth
       },
       process.env.JWT_REFRESH_KEY,
       { expiresIn: "365d" }
@@ -103,7 +105,7 @@ const authController = {
     }
   },
 
-  //custom 
+  //custom
   requestRefreshToken: async (req, res) => {
     //Take refresh token from user
     //const refreshToken = req.cookies.refreshToken;
