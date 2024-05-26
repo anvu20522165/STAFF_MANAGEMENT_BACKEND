@@ -104,8 +104,12 @@ const notificationController = {
      */
     getNotificationByUserId: async (req, res) => {
         try {
+            const token = req.headers.authorization.split(' ')[1];
+            const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+
             const {userId} = req.params
-            const userNotifications = await NotificationUser.find({userId})
+            const userNotifications = await NotificationUser
+                .find({userId: userId || decoded.id})
                 .populate('notificationId')
                 .sort({updatedAt: -1})
                 .lean()
@@ -216,10 +220,13 @@ const notificationController = {
      * @returns {Promise<void>}
      */
     countNoReadOfUser: async (req, res) => {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
         try {
             const {userId} = req.params
             const count = await NotificationUser.count({
-                userId
+                userId: userId || decoded?.id,
+                status: NotificationConstant.status.Unread
             })
             return res.status(200).json(count || 0)
         } catch (err) {

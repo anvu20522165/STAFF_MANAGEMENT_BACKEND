@@ -46,7 +46,7 @@ const authController = {
         isAdmin: user.isAdmin,
         position:user.position,
         department: user.department,
-        birthday: user.birth
+        birth: user.birth
       },
       process.env.JWT_ACCESS_KEY,
       { expiresIn: "1d" }
@@ -63,7 +63,7 @@ const authController = {
         isAdmin: user.isAdmin,
         position:user.position,
         department: user.department,
-        birthday: user.birth
+        birth: user.birth
       },
       process.env.JWT_REFRESH_KEY,
       { expiresIn: "365d" }
