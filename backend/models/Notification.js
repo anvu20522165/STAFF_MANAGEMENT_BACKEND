@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Notification = require("../constants/notification");
+const NotificationConstant = require("../constants/notification");
 
 const notificationSchema = new mongoose.Schema(
     {
@@ -15,7 +15,7 @@ const notificationSchema = new mongoose.Schema(
         type: {
             type: String,
             required: true,
-            default: Notification.type.Internal
+            default: NotificationConstant.type.Internal
         },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,

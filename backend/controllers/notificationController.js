@@ -15,20 +15,27 @@ const notificationController = {
      */
     getAllNotifications: async (req, res) => {
         try {
+            const token = req.headers.authorization.split(' ')[1];
+            const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
             const {type} = req.query
             const notifications = await Notification.find({
-                ...(type && {type})
-            }).sort({updatedAt: -1})
+                ...(type && {type}),
+                createdBy: decoded.id
+            })
+                .lean()
+                .sort({updatedAt: -1})
             const response = [];
             for (const notification of notifications) {
                 const employments = (await NotificationUser.find({
                     notificationId: notification._id
                 })
-                    .populate('userId').exec())
+                    .populate('userId')
+                    .lean()
+                    .exec())
                     .map(o => o.userId)
                     .map(user => ({_id: user._id, fullname: user.fullname}));
                 response.push({
-                    ...JSON.parse(JSON.stringify(notification)),
+                    ...notification,
                     employments
                 })
             }
@@ -101,9 +108,13 @@ const notificationController = {
             const userNotifications = await NotificationUser.find({userId})
                 .populate('notificationId')
                 .sort({updatedAt: -1})
+                .lean()
                 .exec();
 
-            const notifications = (userNotifications || []).map(o => o.notificationId)
+            const notifications = (userNotifications || []).map(o => ({
+                ...o.notificationId,
+                status: o.status
+            }))
             return res.status(200).json(notifications)
         } catch (err) {
             return res.status(400).json(err)
@@ -175,6 +186,42 @@ const notificationController = {
             })
             await Notification.findByIdAndDelete(notificationId)
             return res.status(200).json('Delete successfully')
+        } catch (err) {
+            return res.status(400).json(err)
+        }
+    },
+
+    /**
+     * mark all user's notification was read
+     *
+     */
+    markReadOfUser: async (req, res) => {
+        try {
+            const {userId} = req.params
+            await NotificationUser.updateMany({
+                userId
+            }, {
+                status: NotificationConstant.status.Read
+            })
+            return res.status(201).json('Successfully')
+        } catch (err) {
+            return res.status(400).json(err)
+        }
+    },
+
+    /**
+     * count no read of user
+     * @param req
+     * @param res
+     * @returns {Promise<void>}
+     */
+    countNoReadOfUser: async (req, res) => {
+        try {
+            const {userId} = req.params
+            const count = await NotificationUser.count({
+                userId
+            })
+            return res.status(200).json(count || 0)
         } catch (err) {
             return res.status(400).json(err)
         }
